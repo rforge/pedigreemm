@@ -1,0 +1,11 @@
+useDynLib(pedigreemm, .registration=TRUE)
+
+import("Matrix")
+import("lme4")
+
+export("pedigree")
+
+exportClasses("pedigree")
+
+exportMethods("chol",
+              "coerce")
