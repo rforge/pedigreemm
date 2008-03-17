@@ -21,9 +21,9 @@ lmer_ZStar <-
     Y <- as.double(fr$Y)
 
     if (length(pre) != length(FL))
-        stop(paste("length of argument `pre' must be", length(Ztl)))
+        stop(paste("length of argument `pre' must be", length(FL)))
     for (i in seq_along(FL))
         if (!is.null(pre[[i]]))
             FL[[i]]$Zt <- FL[[i]]$A <- pre[[i]] %*% FL[[i]]$Zt
-    lme4:::lmer_finalize(mc, fr, ST, start, match.arg(method), verbose)
+    lme4:::lmer_finalize(mc, fr, FL, start, match.arg(method), verbose)
 }
