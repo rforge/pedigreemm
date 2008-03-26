@@ -3,7 +3,10 @@
 \docType{data}
 \title{Mastitis cases in Holstein cows}
 \description{
-  Information on the pedigree and herd of Holstein cows.
+  Records of the number of cases of clinical mastitis during the first
+  lactation of a selection of Holstein cows.  Pedigree (sire only), herd
+  and days in milk are also recorded for each cow.  The pedigree of the
+  sires is given in the companion \code{\link{sirePed}} data set.
 }
 \usage{data(Holstein)}
 \format{
@@ -24,6 +27,7 @@
 %\details{~~ If necessary, more details than the __description__ above ~~}
 %\source{~~ reference to a publication or URL from which the data were obtained ~~}
 %\references{~~ possibly secondary sources and usages ~~}
+\seealso{\code{\link{sirePed}}}
 \examples{
 str(Holstein)
 }
