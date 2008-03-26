@@ -1,5 +1,14 @@
+2008-03-25  Ana Vazquez <anainesvs@gmail.com>
+
+        * [r7] data, data/example.rda, data/example.txt, data/pedigreeModif.txt:
+          adding example data and pedigree
+
 2008-03-17  Douglas Bates <bates@stat.wisc.edu>
 
+        * [r6] DESCRIPTION, R/lmerZStar.R: Modifications after testing the
+          package
+        * [r5] R/lmerZStar.R: Initial version of lmer_Zstar; updated
+          dependencies
         * [r3] README: Remove unnecessary README
 
 2008-03-11  Douglas Bates <bates@stat.wisc.edu>
