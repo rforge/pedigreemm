@@ -96,30 +96,34 @@ SEXP pedigree_inbreeding(SEXP x)
     int *SI, *MI,		/* start and minor */
 	*sire = INTEGER(sp),
 	*dam = INTEGER(GET_SLOT(x, install("dam")));
-    double *F = Alloca(n + 1, double), /* inbreeding coefficients */
-      *L = Alloca(n + 1, double), *B = Alloca(n + 1, double);
-    int *Anc = Alloca(n + 1, int),	/* ancestor */
-	*LAP = Alloca(n + 1, int); 	/* longest ancestoral path */
+    double *F = Calloc(n + 1, double), /* inbreeding coefficients */
+      *L = Calloc(n + 1, double), *B = Calloc(n + 1, double);
+    int *Anc = Calloc(n + 1, int),	/* ancestor */
+	*LAP = Calloc(n + 1, int); 	/* longest ancestoral path */
     R_CheckStack();
     
+    for (i = 0; i < n; i++) {     /* Replace NA's by zeros */
+	if (sire[i] == NA_INTEGER) sire[i] = 0;
+	if (dam[i] == NA_INTEGER) dam[i] = 0;
+    }
     F[0] =-1; LAP[0] =-1; /* set F and lap for unknown parents */
     for(i = 1, t = -1; i <= n; i++) { 	/* evaluate LAP and its maximum */
-	S = sire[i]; D = dam[i]; /* parents of animal i */
+	S = sire[i-1]; D = dam[i-1]; /* parents of animal i-1 */
 	LAP[i] = ((LAP[S] < LAP[D]) ? LAP[D] : LAP[S]) + 1;
 	if (LAP[i] > t) t = LAP[i];
     }
-    SI = Alloca(t + 1, int);
-    MI = Alloca(t + 1, int);
+    SI = Calloc(t + 1, int);
+    MI = Calloc(t + 1, int);
     for(i = 0; i <= t ; ++i) SI[i] = MI[i] = 0; /* initialize start and minor */
     for(i = 1; i <= n; i++) { 	/* evaluate F */
-	S = sire[i]; D = dam[i]; /* parents of animal i */
+	S = sire[i-1]; D = dam[i-1]; /* parents of animal i */
 	B[i] = 0.5 - 0.25 * (F[S] + F[D]); 
 				/* adjust start and minor */
-	for (int j = 0; j < LAP[i]; j++) {++SI[j]; ++MI[j];} 
+	for (j = 0; j < LAP[i]; j++) {++SI[j]; ++MI[j];} 
 	if (S == 0 || D == 0) { /* both parents unknown */
 	    F[i] = L[i] = 0; continue;
 	}
-	if(S == sire[i-1] && D == dam[i-1]) { /* full-sib with last animal */
+	if(S == sire[i-2] && D == dam[i-2]) { /* full-sib with last animal */
 	    F[i] = F[i-1]; L[i] = L[i-1]; continue;
 	}
     
@@ -128,7 +132,7 @@ SEXP pedigree_inbreeding(SEXP x)
 	Anc[MI[t]++] = i; /* initialize Anc and increment MI[t] */
 	while(t > -1) { /* from the largest lap group to zero */
 	    j = Anc[--MI[t]]; /* next ancestor */
-	    S = sire[j]; D = dam[j]; /* parents of the ancestor */
+	    S = sire[j-1]; D = dam[j-1]; /* parents of the ancestor */
 	    if (S) {
 		if (!L[S]) Anc[MI[LAP[S]]++] = S; 
 				/* add sire in its lap group in Anc
@@ -149,6 +153,12 @@ SEXP pedigree_inbreeding(SEXP x)
     }
     ans = PROTECT(allocVector(REALSXP, n));
     Memcpy(REAL(ans), F + 1, n);
+
+    for (i = 0; i < n; i++) {     /* Restore the NA's */
+	if (!sire[i]) sire[i] = NA_INTEGER;
+	if (!dam[i]) dam[i] = NA_INTEGER;
+    }
+    Free(F); Free(L); Free(B); Free(Anc); Free(LAP); Free(SI); Free(MI);
     UNPROTECT(1);
     return ans;
 }
