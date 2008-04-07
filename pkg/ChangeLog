@@ -1,3 +1,29 @@
+2008-04-07  Ana Vazquez <anainesvs@gmail.com>
+
+        * [r22] data/pedigreeSires.rda: adding the pedigree of the sires.
+
+2008-04-07  Douglas Bates <bates@stat.wisc.edu>
+
+        * [r21] man/Holstein.Rd: Data set is no longer called Holstein
+        * [r20] data/dairyCattle.Rd, man/dairyCattle.Rd: Move documentation file
+          to man directory
+        * [r19] data/dairyCattle.Rd: Remove horrible list of factor levels
+
+2008-04-04  Ana Vazquez <anainesvs@gmail.com>
+
+        * [r18] data/dairyCattle.Rd: add dairyCattle.Rd file
+
+2008-04-03  Ana Vazquez <anainesvs@gmail.com>
+
+        * [r17] data/dairyCattle.rda: add dairyCattle.rda and remove
+          Holstein.rda
+        * [r16] data/Holstein.rda, data/sirePed.rda: add dairyCattle.rda and
+          remove Holstein.rda
+
+2008-04-02  Douglas Bates <bates@stat.wisc.edu>
+
+        * [r15] DESCRIPTION: Correct form of Maintainer: field; New release.
+
 2008-03-26  Douglas Bates <bates@stat.wisc.edu>
 
         * [r13] man/Holstein.Rd, man/pedigree-class.Rd, man/sirePed.Rd:
