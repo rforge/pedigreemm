@@ -1,3 +1,13 @@
+2008-04-07  Douglas Bates <bates@stat.wisc.edu>
+
+        * [r27] NAMESPACE, R/AllClass.R, R/pedigree.R: Add class pedinbred to
+          calculate and store the inbreeding
+        * [r26] src/pedigree.c: cleaned up code in pedigree_inbreeding
+        * [r25] DESCRIPTION, data/pedigreeSires.rda, data/sirePedigree.rda,
+          man/sirePed.Rd, man/sirePedigree.Rd: Move pedigrees to name
+          sirePedigree; New release
+        * [r24] man/sirePed.Rd: Commit changes prior to removing
+
 2008-04-07  Ana Vazquez <anainesvs@gmail.com>
 
         * [r22] data/pedigreeSires.rda: adding the pedigree of the sires.
