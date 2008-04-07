@@ -5,7 +5,11 @@ import("lme4")
 
 export("pedigree")
 
-exportClasses("pedigree")
+exportClasses("pedigree", "pedinbred")
 
 exportMethods("chol",
-              "coerce")
+              "coerce",
+              "head",
+              "show",
+              "tail"
+              )

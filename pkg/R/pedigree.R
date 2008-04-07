@@ -18,8 +18,8 @@ setAs("pedigree", "dtCMatrix", # representation as T^{-1}
 	  animal <- seq_along(sire)
 	  j <- c(sire, from@dam)
 	  ind <- !is.na(j)
-	  as(new("dtTMatrix", i = rep.int(animal, 2)[ind] - 1:1,
-		 j = j[ind] - 1:1, x = rep.int(-0.5, sum(ind)),
+	  as(new("dtTMatrix", i = rep.int(animal, 2)[ind] - 1L,
+		 j = j[ind] - 1L, x = rep.int(-0.5, sum(ind)),
 		 Dim = c(n,n), Dimnames = list(from@label, NULL),
 		 uplo = "L", diag = "U"), "dtCMatrix")
       })
@@ -31,11 +31,14 @@ setAs("pedigree", "data.frame",
 		 row.names = from@label))
 
 ped2DF <- function(x) {
+    stopifnot(is(x, "pedigree"))
     lab <- x@label
     lev <- seq_along(lab)
-    data.frame(sire = factor(x@sire, levels = lev, labels = lab),
-	       dam  = factor(x@dam,  levels = lev, labels = lab),
-	       row.names = lab)
+    ans <- data.frame(sire = factor(x@sire, levels = lev, labels = lab),
+                      dam  = factor(x@dam,  levels = lev, labels = lab),
+                      row.names = lab)
+    if (is(x, "pedinbred")) ans <- cbind(ans, F = x@F)
+    ans
 }
 
 setMethod("show", signature(object = "pedigree"),
@@ -64,8 +67,14 @@ pedmat <- function(Name, pedigree, type = c("id", "sire", "dam"))
     nm <- as.name(Name)
     Tinv <- as(pedigree, "dtCMatrix")
     if (type == "sire") {
+        ## Don't do this!
         ## generate the T matrix for the sires only
-        ind <- as(diag(length(pedigree@label)),
-                  "sparseMatrix")[, sort(unique(na.omit(pedigree@sire)))]
+       ## ind <- as(diag(length(pedigree@label)),
+         ##         "sparseMatrix")[, sort(unique(na.omit(pedigree@sire)))]
     }
 }
+
+setAs("pedigree", "pedinbred",
+      function(from)
+      new("pedinbred", sire = from@sire, dam = from@dam, label = from@label,
+          F = .Call(pedigree_inbreeding, from)))

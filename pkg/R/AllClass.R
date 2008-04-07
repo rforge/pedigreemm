@@ -19,3 +19,13 @@ setClass("pedigree", representation =
                               n, "]", sep = ''))
 	     TRUE
 	 })
+
+setClass("pedinbred", representation(F = "numeric"),
+         contains = "pedigree",
+         validity = function(object) {
+             if (length(object@F) != length(object@sire))
+                 return("Length of F slot must match other lengths")
+             if (any(object@F < 0))
+                 return("F slot must contain only non-negative values")
+             TRUE
+         })
