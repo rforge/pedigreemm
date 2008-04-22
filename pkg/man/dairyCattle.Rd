@@ -5,14 +5,12 @@
 \description{
   Records of the number of cases of clinical mastitis during the first
   lactation of a selection of dairly cattle, primarily Holsteins.
-  Pedigree (sire only), herd and days in milk are also recorded for each
+  The sire, herd and days in milk are also recorded for each
   cow.
-%  The pedigree of the sires is given in the companion
-%  \code{\link{sirePed}} data set.
 }
 \usage{data(dairyCattle)}
 \format{
-  A data frame with 48055 observations on the following 8 variables.
+  A data frame with 47047 observations on the following 8 variables.
   \describe{
     \item{\code{id}}{International code of the cow.}
     \item{\code{sire}}{International code of the cow sire.}
@@ -26,11 +24,13 @@
     \item{\code{DIM}}{total number of days in milk for the lactation.}
   }
 }
-%\details{~~ If necessary, more details than the __description__ above ~~}
+\details{The pedigree of the sires is given in the companion
+  \code{\link{sirePedigree}} data set.}
 %\source{~~ reference to a publication or URL from which the data were obtained ~~}
 %\references{~~ possibly secondary sources and usages ~~}
-\seealso{\code{\link{pedigree}}}
+\seealso{\code{\link{sirePedigree}}, \code{\link{pedigree}}}
 \examples{
 str(dairyCattle)
+summary(dairyCattle, maxsum = 24)
 }
 \keyword{datasets}
