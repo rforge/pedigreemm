@@ -1,3 +1,16 @@
+2008-04-22  Douglas Bates <bates@stat.wisc.edu>
+
+        * [r32] DESCRIPTION: new release
+        * [r31] NAMESPACE, R/pedigree.R, man/pedigree-class.Rd, src/pedigree.c:
+          Remove chol method, which was not working anyway and would be horribly
+          expensive
+        * [r30] data/dairyCattle.rda, man/dairyCattle.Rd: Remove redundant
+          levels of the sire factor
+
+2008-04-08  Douglas Bates <bates@stat.wisc.edu>
+
+        * [r29] man/dairyCattle.Rd: Update documentation
+
 2008-04-07  Douglas Bates <bates@stat.wisc.edu>
 
         * [r27] NAMESPACE, R/AllClass.R, R/pedigree.R: Add class pedinbred to
