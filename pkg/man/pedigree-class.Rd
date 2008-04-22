@@ -1,7 +1,8 @@
 \name{pedigree-class}
 \docType{class}
 \alias{pedigree-class}
-\alias{chol,pedigree-method}
+\alias{pedinbred-class}
+%\alias{chol,pedigree-method}
 \alias{coerce,pedigree,dtCMatrix-method}
 \alias{coerce,pedigree,data.frame-method}
 \alias{head,pedigree-method}
@@ -13,10 +14,16 @@
   Objects of class \code{"pedigree"} represent a set of
   individuals that can have two parents including their parent-child
   relations.  The terminology has been taken from cattle breeding.
+  The \code{"pedinbred"} class is an extension of the pedigree class
+  with an additional slot of the inbreeding coefficients.
 }
 \section{Objects from the Class}{
-  Objects can be created by calls of the form \code{new("pedigree",
-    ...)}, or more conveniently, \code{\link{pedigree}(sire= ., dam = ., label = .)}.
+  Objects in the \code{"pedigree"} class can be created by calls of the
+  form \code{new("pedigree", ...)}, or more conveniently,
+  \code{\link{pedigree}(sire= ., dam = ., label =.)}.
+
+  Objects of the \code{"pedinbred"} class are created by coercing a
+  pedigree to class \code{"pedinbred"}.
 }
 \section{Slots}{
   \describe{
@@ -28,15 +35,21 @@
     \item{\code{label}:}{a \code{"character"} vector of the same length
       as \code{sire} and \code{dam} giving a unique ID for the
       corresponding entry.}
+    \item{\code{F}:}{(class \code{"pedinbred"} only) a numeric vector of
+      inbreeding coefficients.}
   }
 }
 \section{Methods}{
   \describe{
-    \item{chol}{\code{signature(x = "pedigree")}: returns the
-      lower-triangular, sparse matrix (a
-      \code{\link[Matrix:dtCMatrix-class]{dtCMatrix}} object) that is
-      the left Cholesky factor of the relationship matrix of the pedigree.}
-    \item{coerce}{\code{signature(from = "pedigree", to = "dtCMatrix")}: ... }
+%     \item{chol}{\code{signature(x = "pedigree")}: returns the
+%       lower-triangular, sparse matrix (a
+%       \code{\link[Matrix:dtCMatrix-class]{dtCMatrix}} object) that is
+%       the left Cholesky factor of the relationship matrix of the pedigree.}
+    \item{coerce}{\code{signature(from = "pedigree", to = "dtCMatrix")}:
+      returns a unit lower-triangular matrix which is the inverse of the
+      "L" part of the "LDL'" form of the Cholesky factorization of the
+      relationship matrix.  All non-zero elements below the diagonal
+      are -0.5.}
     \item{coerce}{\code{signature(from = "pedigree", to = "data.frame")}: ... }
     \item{head}{\code{signature(x = "pedigree")}: ... }
     \item{show}{\code{signature(object = "pedigree")}: ... }
@@ -60,6 +73,6 @@ p1 <- new("pedigree",
 p1
 (dtc <- as(p1, "dtCMatrix"))   # T-inverse in Mrode's notation
 solve(dtc)
-chol(p1)  # (left) Cholesky factor of A, the relationship matrix
+#chol(p1)  # (left) Cholesky factor of A, the relationship matrix
 }
 \keyword{classes}

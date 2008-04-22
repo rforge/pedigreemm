@@ -50,13 +50,13 @@ setMethod("head", "pedigree", function(x, ...)
 setMethod("tail", "pedigree", function(x, ...)
 	  do.call("tail", list(x = ped2DF(x), ...)))
 
-setMethod("chol", "pedigree",
-          function(x, pivot, LINPACK) {
-              ttrans <- solve(t(as(x, "dtCMatrix")))
-              .Call(pedigree_chol, x,
-                    as(.Call("Csparse_diagU2N", t(ttrans), PACKAGE = "Matrix"),
-                       "dtCMatrix"))
-          })
+## setMethod("chol", "pedigree",
+##           function(x, pivot, LINPACK) {
+##               ttrans <- solve(t(as(x, "dtCMatrix")))
+##               .Call(pedigree_chol, x,
+##                     as(.Call("Csparse_diagU2N", t(ttrans), PACKAGE = "Matrix"),
+##                        "dtCMatrix"))
+##           })
 
 pedmat <- function(Name, pedigree, type = c("id", "sire", "dam"))
 ### Should return the sparse forms of the Cholesky factor of the

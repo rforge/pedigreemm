@@ -76,7 +76,6 @@ SEXP pedigree_chol(SEXP x, SEXP ans)
     return ans;
 }
 
-/* NOTE: This function requires that missing parents be coded as zero */
 /**
  * Create the inbreeding coefficients according to the algorithm given
  * in "Comparison of four direct algorithms for computing inbreeding
