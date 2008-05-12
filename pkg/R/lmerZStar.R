@@ -20,10 +20,11 @@ lmer_ZStar <-
     FL <- lme4:::lmerFactorList(formula, fr$mf, 0L, 0L) # flist, Zt, cnames
     Y <- as.double(fr$Y)
 
-    if (length(pre) != length(FL))
+
+    if (length(pre) != length(FL$fl))
         stop(paste("length of argument `pre' must be", length(FL)))
-    for (i in seq_along(FL))
+    for (i in seq_along(FL$fl))
         if (!is.null(pre[[i]]))
-            FL[[i]]$Zt <- FL[[i]]$A <- pre[[i]] %*% FL[[i]]$Zt
+            FL$fl[[i]]$Zt <- FL$fl[[i]]$A <- pre[[i]] %*% FL$fl[[i]]$Zt
     lme4:::lmer_finalize(mc, fr, FL, start, match.arg(method), verbose)
 }
