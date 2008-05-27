@@ -1,3 +1,17 @@
+2008-05-25  Douglas Bates <bates@stat.wisc.edu>
+
+	* [r36] R/lmerZStar.R: Use FL$fl, not just FL after modifications to
+	  factor list generator
+
+2008-05-19  Ana Vazquez <anainesvs@gmail.com>
+
+	* [r35] data/dairyCattle.rda: Remove repeated and incorrect observations.
+
+2008-05-12  Douglas Bates <bates@stat.wisc.edu>
+
+	* [r34] R/lmerZStar.R: update lmer_ZStar to new form of lmerFactorList
+	  value
+	
 2008-04-22  Douglas Bates <bates@stat.wisc.edu>
 
         * [r32] DESCRIPTION: new release
