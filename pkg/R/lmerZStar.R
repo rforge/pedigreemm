@@ -26,6 +26,6 @@ lmer_ZStar <-
  ## FIXME: Should check for names.  Also check for dimensions matching if not NULL
    for (i in seq_along(FL$fl))
         if (!is.null(pre[[i]]))
-            FL$fl[[i]]$Zt <- FL$fl[[i]]$A <- pre[[i]] %*% FL$fl[[i]]$Zt
+    FL$trms[[i]]$Zt <- FL$trms[[i]]$A <- pre[[i]] %*% FL$trms[[i]]$Zt
     lme4:::lmer_finalize(mc, fr, FL, start, match.arg(method), verbose)
 }
