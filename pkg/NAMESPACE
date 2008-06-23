@@ -1,6 +1,6 @@
 useDynLib(pedigreemm, .registration=TRUE)
 
-#import("Matrix")
+importfrom("Matrix","chol")
 import("lme4")
 
 export("pedigree")
