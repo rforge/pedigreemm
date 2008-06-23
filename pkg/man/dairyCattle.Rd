@@ -10,7 +10,7 @@
 }
 \usage{data(dairyCattle)}
 \format{
-  A data frame with 47047 observations on the following 8 variables.
+  A data frame with 45101 observations on the following 8 variables.
   \describe{
     \item{\code{id}}{International code of the cow.}
     \item{\code{sire}}{International code of the cow sire.}
