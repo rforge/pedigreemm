@@ -61,7 +61,8 @@ setMethod("tail", "pedigree", function(x, ...)
 Linv <- function(ped)
 {
     stopifnot(is(ped, "pedigree"))
-    Diagonal(x = (1/(1 +.Call("pedigree_inbreeding", ped)))) %*% as(ped, "dtCMatrix")
+    as(Diagonal(x = sqrt(1/(1 +.Call("pedigree_inbreeding", ped)))) %*%
+       as(ped, "dtCMatrix"), "triangularMatrix")
 }
 
 pedmat <- function(Name, pedigree, type = c("id", "sire", "dam"))
