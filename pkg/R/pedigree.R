@@ -58,6 +58,12 @@ setMethod("tail", "pedigree", function(x, ...)
 ##                        "dtCMatrix"))
 ##           })
 
+Linv <- function(ped)
+{
+    stopifnot(is(ped, "pedigree"))
+    Diagonal(x = (1/(1 +.Call("pedigree_inbreeding", ped)))) %*% as(ped, "dtCMatrix")
+}
+
 pedmat <- function(Name, pedigree, type = c("id", "sire", "dam"))
 ### Should return the sparse forms of the Cholesky factor of the
 ### relationship matrix, reduced in the case of type = "sire" or "dam"    
