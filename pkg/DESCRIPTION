@@ -1,11 +1,11 @@
 Package: pedigreemm
-Version: 0.1-5
-Date: 2008-04-22
+Version: 0.1-6
+Date: 2008-07-11
 Title: Pedigree-based mixed-effects models
 Author: Douglas Bates and Ana Ines Vazquez
 Maintainer: Ana Ines Vazquez <anainesvs@gmail.com>
 Description: Fit pedigree-based mixed-effects models.
-Depends: methods, R(>= 2.6.2), lme4 (>= 0.999375-9)
+Depends: methods, R(>= 2.7.0), lme4 (>= 0.999375-22)
 Imports: graphics, stats
 LazyLoad: yes
 LazyData: yes
