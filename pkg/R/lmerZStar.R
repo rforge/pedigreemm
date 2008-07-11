@@ -1,5 +1,5 @@
 lmer_ZStar <-
-    function(formula, data, family = NULL, pre = NULL, method = c("REML", "ML"),
+    function(formula, data, family = NULL, pre = NULL, REML = TRUE,
              control = list(), start = NULL, verbose = FALSE, subset,
              weights, na.action, offset, contrasts = NULL,
              model = TRUE, x = TRUE, ...)
@@ -10,22 +10,21 @@ lmer_ZStar <-
         mv[[1]] <- as.name("lmer")
         return(eval(mc))
     }
-    if (!is.null(family)) {             # call glmer_ZStar
-        mc[[1]] <- as.name("glmer_ZStar")
-        return(eval(mc))
-    }
-    stopifnot(length(formula <- as.formula(formula)) == 3)
-
-    fr <- lme4:::lmerFrames(mc, formula, contrasts) # model frame, X, etc.
-    FL <- lme4:::lmerFactorList(formula, fr$mf, 0L, 0L) # flist, Zt, cnames
-    Y <- as.double(fr$Y)
-
+    mc$pre <- NULL
+    mc$doFit <- FALSE
+    mc[[1]] <- as.name("lmer")
+    lf <- eval.parent(mc)
+    FL <- lf$FL
 
     if (length(pre) != length(FL$fl))
         stop(paste("length of argument `pre' must be", length(FL$fl)))
  ## FIXME: Should check for names.  Also check for dimensions matching if not NULL
    for (i in seq_along(FL$fl))
         if (!is.null(pre[[i]]))
-    FL$trms[[i]]$Zt <- FL$trms[[i]]$A <- pre[[i]] %*% FL$trms[[i]]$Zt
-    lme4:::lmer_finalize(mc, fr, FL, start, match.arg(method), verbose)
+            FL$trms[[i]]$Zt <- FL$trms[[i]]$A <- pre[[i]] %*% FL$trms[[i]]$Zt
+    lf$FL <- FL
+    ans <- do.call(if (!is.null(lf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lf)
+    ans@call <- match.call()
+    ans
 }
+
