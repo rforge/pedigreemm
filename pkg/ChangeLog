@@ -1,3 +1,22 @@
+2008-07-11  Douglas Bates <bates@stat.wisc.edu>
+
+	* [r44] DESCRIPTION, inst, inst/doc, inst/doc/Methods.txt: New version.
+	  Add inst/doc
+	* [r43] R/lmerZStar.R: Move to the doFit = FALSE argument in lmer and
+	  glmer
+
+2008-06-23  Douglas Bates <bates@stat.wisc.edu>
+
+	* [r42] R/pedigree.R: Add the corrected version of Linv
+	* [r41] man/dairyCattle.Rd: Correct the record count
+	* [r40] NAMESPACE: Import the chol generic from Matrix
+	* [r39] R/pedigree.R: Add a (hidden) Linv function
+
+2008-06-18  Ana Vazquez <anainesvs@gmail.com>
+
+	* [r38] R/lmerZStar.R: fixing bug: FL$fl[[i]]$Zt instead of
+	  FL$trms[[i]]$Zt
+	
 2008-05-25  Douglas Bates <bates@stat.wisc.edu>
 
 	* [r36] R/lmerZStar.R: Use FL$fl, not just FL after modifications to
