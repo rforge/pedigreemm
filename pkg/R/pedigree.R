@@ -1,6 +1,18 @@
 #### "pedigree" class methods
 
-## Simple constructor; main point are the 'as.*' -> prettier calls
+#' Constructor for pedigree objects
+#'
+#' A simple constructor for a pedigree object.  The main point for the
+#' constructor is to use coercions to make the calls easier.
+#' @param sire integer vector or factor representation of the sires
+#' @param dam integer vector or factor representation of the dams
+#' @param label character vector of labels
+#! @return an pedigree object of class \linkS4class{pedigree}
+
+#' @note \code{sire}, \code{dam} and \code{label} must all have the
+#' same length and all labels in \code{sire} and \code{dam} must occur
+#' in \code{label}
+#' @export
 pedigree <- function(sire, dam, label) {
     n <- length(sire)
     stopifnot(n == length(dam), n == length(label))
@@ -11,6 +23,13 @@ pedigree <- function(sire, dam, label) {
 	label = as.character(label))
 }
 
+#' Coerce a pedigree to a sparse triangular matrix
+#'
+#' Create a sparse, unit lower triangular matrix from a pedigree.  The
+#' matrix the L factor in the LDL' Cholesky factorization of the
+#' inverse of the relationship matrix.
+#'
+#' @export
 setAs("pedigree", "dtCMatrix", # representation as T^{-1}
       function(from) {
 	  sire <- from@sire
@@ -30,6 +49,16 @@ setAs("pedigree", "data.frame",
       data.frame(sire = from@sire, dam = from@dam,
 		 row.names = from@label))
 
+#' Convert a pedigree to a data frame
+#'
+#' Express a pedigree as a data frame with \code{sire} and
+#' \code{dam} stored as factors.  If the pedigree is an object of
+#' class \linkS4class{pedinbred} then the inbreeding coefficients are
+#' appended as the variable \code{F}
+#'
+#' @param x a pedigree object of class \linkS4class{pedigree}
+#' @return a data frame
+#'
 ped2DF <- function(x) {
     stopifnot(is(x, "pedigree"))
     lab <- x@label
@@ -50,13 +79,6 @@ setMethod("head", "pedigree", function(x, ...)
 setMethod("tail", "pedigree", function(x, ...)
 	  do.call("tail", list(x = ped2DF(x), ...)))
 
-## setMethod("chol", "pedigree",
-##           function(x, pivot, LINPACK) {
-##               ttrans <- solve(t(as(x, "dtCMatrix")))
-##               .Call(pedigree_chol, x,
-##                     as(.Call("Csparse_diagU2N", t(ttrans), PACKAGE = "Matrix"),
-##                        "dtCMatrix"))
-##           })
 
 Linv <- function(ped)
 {
@@ -85,3 +107,55 @@ setAs("pedigree", "pedinbred",
       function(from)
       new("pedinbred", sire = from@sire, dam = from@dam, label = from@label,
           F = .Call(pedigree_inbreeding, from)))
+
+#' Diagonal factor of the relationship inverse
+#'
+#' Determine the diagonal factor in the inverse of the relationship
+#' matrix from a pedigree.  Although in practice we use the
+#' relationship matrix from a pedigree, it is easier to evaluate the
+#' factors of the inverse of the relationship matrix.  This function
+#' returns the diagonal matrix from the LDL' form of the Cholesky
+#' factorization of the inverse of the relationship matrix.
+#'
+#' @param ped an object that inherits from class \linkS4class{pedigree}
+#' @return a numeric vector
+#' @export
+Ddiag <- function(ped) {
+    stopifnot(is(ped, "pedigree"))
+    F <- .Call("pedigree_inbreeding", ped, PACKAGE = "pedigreemm")
+    sire <- ped@sire
+    dam <- ped@dam
+    Fsire <- ifelse(is.na(sire), -1, F[sire])
+    Fdam <-  ifelse(is.na(dam), -1, F[dam])
+    1 - 0.25 * (2 + Fsire + Fdam)
+}
+
+#' Relationship matrix from a pedigree
+#'
+#' Determine the relationship matrix for the pedigree \code{ped},
+#' possibly restricted to the specific labels that occur in \code{labs}.
+#' 
+#' @param ped a pedigree that includes the individuals who occur in svec
+#' @param labs a character vector or a factor giving the labels to
+#'    which to restrict the relationship matrix. If \code{labs} is a
+#'    factor then the levels of the factor are used as the labels.
+#' @param drop.unused.levels logical scalar -- should unused levels in
+#'    \code{labs} be dropped before matching to the pedigree.  Defaults
+#'    to TRUE.  Only used when \code{labs} is a factor.
+#' @return a sparse, symmetric relationship matrix
+#' @export
+
+relmat <- function(ped, labs = NULL, drop.unused.levels = TRUE)
+{
+    stopifnot(is(ped, "pedigree"))
+    if (!is.null(labs)) {
+        if (is(labs, "factor"))
+            labs <- levels(labs[,drop = drop.unused.levels])
+        stopifnot(all(levs %in% ped@label))
+        Tt <-
+            solve(t(as(ped, "dtCMatrix")),
+                  Matrix:::fac2sparse(factor(levs, levels =
+                                             ped@label), drop = FALSE))
+    } else Tt <- solve(t(as(ped, "dtCMatrix")))
+    crossprod(Diagonal(x = sqrt(Ddiag(ped))) %*% Tt)
+}

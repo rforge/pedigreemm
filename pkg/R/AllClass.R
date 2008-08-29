@@ -1,3 +1,6 @@
+#' Pedigree class
+#'
+#'
 setClass("pedigree", representation =
 	 list(sire = "integer", dam = "integer", label = "character"),
 	 validity = function(object) {
