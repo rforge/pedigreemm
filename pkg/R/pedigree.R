@@ -151,11 +151,11 @@ relmat <- function(ped, labs = NULL, drop.unused.levels = TRUE)
     if (!is.null(labs)) {
         if (is(labs, "factor"))
             labs <- levels(labs[,drop = drop.unused.levels])
-        stopifnot(all(levs %in% ped@label))
+        stopifnot(all(labs %in% ped@label))
         Tt <-
             solve(t(as(ped, "dtCMatrix")),
-                  Matrix:::fac2sparse(factor(levs, levels =
+                  Matrix:::fac2sparse(factor(labs, levels =
                                              ped@label), drop = FALSE))
     } else Tt <- solve(t(as(ped, "dtCMatrix")))
-    crossprod(Diagonal(x = sqrt(Ddiag(ped))) %*% Tt)
+    crossprod(Diagonal(x = sqrt(pedigreemm:::Ddiag(ped))) %*% Tt)
 }
