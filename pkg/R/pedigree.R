@@ -80,22 +80,26 @@ setMethod("tail", "pedigree", function(x, ...)
 	  do.call("tail", list(x = ped2DF(x), ...)))
 
 
-Linv <- function(ped)
+Linvt <- function(ped)
 {
     stopifnot(is(ped, "pedigree"))
-    as(Diagonal(x = sqrt(1/(1 +.Call("pedigree_inbreeding", ped)))) %*%
-       as(ped, "dtCMatrix"), "triangularMatrix")
+    t(as(Diagonal(x = sqrt(1/(1 +.Call("pedigree_inbreeding", ped)))) %*%
+       as(ped, "dtCMatrix"), "triangularMatrix"))
 }
 
-pedmat <- function(Name, pedigree, type = c("id", "sire", "dam"))
-### Should return the sparse forms of the Cholesky factor of the
-### relationship matrix, reduced in the case of type = "sire" or "dam"    
+pedmat <- function(#Name,
+                   pedigree, type = c("id", "sire", "dam"))
+### Should return the sparse forms of the transpose of the Cholesky
+### factor of the relationship matrix (i.e. L'), reduced in the case
+### of type = "sire" or "dam"
 {
     stopifnot(is(pedigree, "pedigree"))
     typ <- match.arg(type)
-    nm <- as.name(Name)
+#    nm <- as.name(Name)
     Tinv <- as(pedigree, "dtCMatrix")
-    if (type == "sire") {
+    if (typ == "id")
+        return(Diagonal(x = sqrt(pedigreemm:::Ddiag(pedigree))) %*% solve(t(Tinv)))
+    if (typ == "sire") {
         ## Don't do this!
         ## generate the T matrix for the sires only
        ## ind <- as(diag(length(pedigree@label)),
@@ -159,3 +163,52 @@ relmat <- function(ped, labs = NULL, drop.unused.levels = TRUE)
     } else Tt <- solve(t(as(ped, "dtCMatrix")))
     crossprod(Diagonal(x = sqrt(pedigreemm:::Ddiag(ped))) %*% Tt)
 }
+
+pedigreemm <-
+    function(formula, data, family = NULL, REML = TRUE, pedigree = list(),
+             control = list(), start = NULL, verbose = FALSE, 
+             subset, weights, na.action, offset, contrasts = NULL,
+             model = TRUE, x = TRUE, ...)
+{
+    mc <- match.call()
+    lmerc <- mc
+    lmerc[[1]] <- as.name("lmer")
+    lmerc$pedigree <- NULL
+                                        # check the pedigree argument
+    if (!length(pedigree))              # call lmer instead
+        return(eval.parent(lmerc))
+    stopifnot(is.list(pedigree),
+              length(names(pedigree)) == length(pedigree),
+              all(sapply(pedigree, is, class2 = "pedigree")))
+                                        # call lmer without pedigree and with doFit = FALSE
+    lmerc$doFit <- FALSE
+    lmf <- eval(lmerc, parent.frame())
+
+    pnms <- names(pedigree)
+    stopifnot(all(pnms %in% names(lmf$FL$fl)))
+    asgn <- attr(lmf$FL$fl, "assign")
+### FIXME: check here that the random effects term is of the form (1|factor)
+    for (i in seq_along(pedigree)) {
+        tn <- which(match(pnms[i], names(lmf$FL$fl)) == asgn)
+        if (length(tn) > 1)
+            stop("a pedigree factor must be associated with only one r.e. term")
+        pedi <- pedigree[[i]]
+        lit <- Linvt(pedi)
+### FIXME: probably should use lmf$FL$trms[[tn]]$Zt instead.  Need to
+### check that the number of rows is the number of unique levels of
+### the factor.        
+        Zt <- lmf$FL$trms[[tn]]$Zt
+        rn <- rownames(Zt)
+        stopifnot(all(rn %in% pedi@label))
+        B <- solve(lit, Matrix:::fac2sparse(factor (rn,
+                                                    levels = pedi@label),
+                                              drop = FALSE))
+        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- chol(crossprod(B)) %*% Zt
+    }
+    ans <- do.call(if (!is.null(lf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
+    ans@call <- match.call()
+    ans
+}
+
+    
+    
