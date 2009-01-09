@@ -1,13 +1,13 @@
 useDynLib(pedigreemm, .registration=TRUE)
 
-importfrom("Matrix","chol")
+import("Matrix")
 import("lme4")
 
 export("pedigree")
 
 exportClasses("pedigree", "pedinbred")
 
-exportMethods(#"chol",
+exportMethods(
               "coerce",
               "head",
               "show",
