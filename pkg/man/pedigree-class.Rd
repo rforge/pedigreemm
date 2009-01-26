@@ -3,7 +3,7 @@
 \alias{pedigree-class}
 \alias{pedinbred-class}
 %\alias{chol,pedigree-method}
-\alias{coerce,pedigree,dtCMatrix-method}
+\alias{coerce,pedigree,sparseMatrix-method}
 \alias{coerce,pedigree,data.frame-method}
 \alias{head,pedigree-method}
 \alias{show,pedigree-method}
@@ -41,12 +41,8 @@
 }
 \section{Methods}{
   \describe{
-%     \item{chol}{\code{signature(x = "pedigree")}: returns the
-%       lower-triangular, sparse matrix (a
-%       \code{\link[Matrix:dtCMatrix-class]{dtCMatrix}} object) that is
-%       the left Cholesky factor of the relationship matrix of the pedigree.}
-    \item{coerce}{\code{signature(from = "pedigree", to = "dtCMatrix")}:
-      returns a unit lower-triangular matrix which is the inverse of the
+    \item{coerce}{\code{signature(from = "pedigree", to = "sparseMatrix")}:
+      returns a sparse, unit lower-triangular matrix which is the inverse of the
       "L" part of the "LDL'" form of the Cholesky factorization of the
       relationship matrix.  All non-zero elements below the diagonal
       are -0.5.}
@@ -61,7 +57,7 @@
     Values, 2nd ed}, CABI Publishing, 2005.
 }
 \seealso{
-  \code{\link{pedigree}}
+  \code{\link{pedigree}}, \code{\link{inbreeding}}
 }
 \examples{
 ## Rather use, pedigree()!   The following is "raw code":
@@ -71,8 +67,8 @@ p1 <- new("pedigree",
           dam  = as.integer(c(NA,NA,2,NA,3,2)),
           label = as.character(1:6))
 p1
-(dtc <- as(p1, "dtCMatrix"))   # T-inverse in Mrode's notation
+(dtc <- as(p1, "sparseMatrix"))   # T-inverse in Mrode's notation
 solve(dtc)
-#chol(p1)  # (left) Cholesky factor of A, the relationship matrix
+inbreeding(p1)
 }
 \keyword{classes}

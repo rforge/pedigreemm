@@ -3,9 +3,9 @@ useDynLib(pedigreemm, .registration=TRUE)
 import("Matrix")
 import("lme4")
 
-export("pedigree", "pedigreemm")
+export("inbreeding", "relfactor", "pedigree", "pedigreemm")
 
-exportClasses("pedigree", "pedinbred")
+exportClasses("pedigree", "pedigreemm")
 
 exportMethods(
               "coerce",

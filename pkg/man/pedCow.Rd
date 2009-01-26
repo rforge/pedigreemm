@@ -15,7 +15,7 @@ Formal class 'pedigree' [package "pedigreemm"] with 3 slots
   ..@ label: chr [1:6547] "1" "2" "3" "4" ...
 }
 \examples{
-str(pedCow5)
+str(pedCow)
 }
 \seealso{\code{\link{mp}}}
 \keyword{datasets}

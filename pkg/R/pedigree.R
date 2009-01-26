@@ -30,7 +30,7 @@ pedigree <- function(sire, dam, label) {
 #' inverse of the relationship matrix.
 #'
 #' @export
-setAs("pedigree", "dtCMatrix", # representation as T^{-1}
+setAs("pedigree", "sparseMatrix", # representation as T^{-1}
       function(from) {
 	  sire <- from@sire
 	  n <- length(sire)
@@ -84,35 +84,10 @@ Linvt <- function(ped)
 {
     stopifnot(is(ped, "pedigree"))
     t(as(Diagonal(x = sqrt(1/(1 +.Call("pedigree_inbreeding", ped)))) %*%
-       as(ped, "dtCMatrix"), "triangularMatrix"))
+       as(ped, "sparseMatrix"), "triangularMatrix"))
 }
 
-pedmat <- function(#Name,
-                   pedigree, type = c("id", "sire", "dam"))
-### Should return the sparse forms of the transpose of the Cholesky
-### factor of the relationship matrix (i.e. L'), reduced in the case
-### of type = "sire" or "dam"
-{
-    stopifnot(is(pedigree, "pedigree"))
-    typ <- match.arg(type)
-#    nm <- as.name(Name)
-    Tinv <- as(pedigree, "dtCMatrix")
-    if (typ == "id")
-        return(Diagonal(x = sqrt(pedigreemm:::Ddiag(pedigree))) %*% solve(t(Tinv)))
-    if (typ == "sire") {
-        ## Don't do this!
-        ## generate the T matrix for the sires only
-       ## ind <- as(diag(length(pedigree@label)),
-         ##         "sparseMatrix")[, sort(unique(na.omit(pedigree@sire)))]
-    }
-}
-
-setAs("pedigree", "pedinbred",
-      function(from)
-      new("pedinbred", sire = from@sire, dam = from@dam, label = from@label,
-          F = .Call(pedigree_inbreeding, from)))
-
-#' Diagonal factor of the relationship inverse
+#' Inbreeding coefficients from a pedigree
 #'
 #' Determine the diagonal factor in the inverse of the relationship
 #' matrix from a pedigree.  Although in practice we use the
@@ -124,44 +99,41 @@ setAs("pedigree", "pedinbred",
 #' @param ped an object that inherits from class \linkS4class{pedigree}
 #' @return a numeric vector
 #' @export
-Ddiag <- function(ped) {
+inbreeding <- function(ped) {
     stopifnot(is(ped, "pedigree"))
     F <- .Call("pedigree_inbreeding", ped, PACKAGE = "pedigreemm")
     sire <- ped@sire
     dam <- ped@dam
     Fsire <- ifelse(is.na(sire), -1, F[sire])
     Fdam <-  ifelse(is.na(dam), -1, F[dam])
-    1 - 0.25 * (2 + Fsire + Fdam)
+    ans <- 1 - 0.25 * (2 + Fsire + Fdam)
+    names(ans) <- ped@label
+    ans
 }
 
-#' Relationship matrix from a pedigree
+#' Relationship factor from a pedigree
 #'
-#' Determine the relationship matrix for the pedigree \code{ped},
-#' possibly restricted to the specific labels that occur in \code{labs}.
+#' Determine the right Cholesky factor of the relationship matrix for
+#' the pedigree \code{ped}, possibly restricted to the specific labels
+#' that occur in \code{labs}. 
 #' 
 #' @param ped a pedigree that includes the individuals who occur in svec
 #' @param labs a character vector or a factor giving the labels to
 #'    which to restrict the relationship matrix. If \code{labs} is a
 #'    factor then the levels of the factor are used as the labels.
-#' @param drop.unused.levels logical scalar -- should unused levels in
-#'    \code{labs} be dropped before matching to the pedigree.  Defaults
-#'    to TRUE.  Only used when \code{labs} is a factor.
+#'    Default is the complete set of labels in the pedigree.
 #' @return a sparse, symmetric relationship matrix
 #' @export
 
-relmat <- function(ped, labs = NULL, drop.unused.levels = TRUE)
+relfactor <- function(ped, labs = ped@label)
 {
     stopifnot(is(ped, "pedigree"))
-    if (!is.null(labs)) {
-        if (is(labs, "factor"))
-            labs <- levels(labs[,drop = drop.unused.levels])
-        stopifnot(all(labs %in% ped@label))
-        Tt <-
-            solve(t(as(ped, "dtCMatrix")),
-                  Matrix:::fac2sparse(factor(labs, levels =
-                                             ped@label), drop = FALSE))
-    } else Tt <- solve(t(as(ped, "dtCMatrix")))
-    crossprod(Diagonal(x = sqrt(pedigreemm:::Ddiag(ped))) %*% Tt)
+    labs <- factor(labs) # drop unused levels from a factor
+    stopifnot(all(labs %in% ped@label))
+    Diagonal(x = sqrt(inbreeding(ped))) %*%
+        solve(t(as(ped, "sparseMatrix")),
+              Matrix:::fac2sparse(factor(labs, levels = ped@label),
+                                  drop = FALSE))
 }
 
 pedigreemm <-
@@ -200,12 +172,12 @@ pedigreemm <-
         Zt <- lmf$FL$trms[[tn]]$Zt
         rn <- rownames(Zt)
         stopifnot(all(rn %in% pedi@label))
-        B <- solve(lit, Matrix:::fac2sparse(factor (rn,
-                                                    levels = pedi@label),
-                                              drop = FALSE))
+        B <- solve(lit, Matrix:::fac2sparse(factor(rn,
+                                                   levels = pedi@label),
+                                            drop = FALSE))
         lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- chol(crossprod(B)) %*% Zt
     }
-    ans <- do.call(if (!is.null(lf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
+    ans <- do.call(if (!is.null(lmf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
     ans@call <- match.call()
     ans
 }
