@@ -1,5 +1,5 @@
-\name{pedCow5}
-\alias{pedCow5}
+\name{pedCow}
+\alias{pedCow}
 \docType{data}
 \title{Pedigree of the cows in mp}
 \description{
@@ -17,4 +17,5 @@ Formal class 'pedigree' [package "pedigreemm"] with 3 slots
 \examples{
 str(pedCow5)
 }
+\seealso{\code{\link{mp}}}
 \keyword{datasets}
