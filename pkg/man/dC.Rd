@@ -4,7 +4,12 @@
 \title{Mastitis cases in dairy cattle}
 \description{
   Records of the number of cases of clinical mastitis during the first
-  lactation of a selection of dairly cattle, primarily Holsteins.
+  lactation of 1,675 cows, primarily Holsteins.
+  Cows belonged to 41 herds and were daughters of 38 sires. 
+  There were 1,491 healthy cows, 134 had only one case of mastitis, 
+  36 had 2 cases, and 14 had between 4 and  cases. 
+  Overall, mastitis incidence was 0.11. 
+  Calving years for these records were from 2000 through 2005. 
   The sire, herd and days in milk are also recorded for each
   cow.
 }
@@ -26,7 +31,11 @@
 }
 \details{The pedigree of the sires is given in the companion
   \code{\link{pedSires}} data set.}
-%\source{~~ reference to a publication or URL from which the data were obtained ~~}
+\source{
+    Vazquez, A.I. 2007. Analysis of number of episodes of clinical mastitis
+    in Norwegian Red and Holstein cows with Poisson and categorical data mixed models. 
+    Master of Science Thesis. University of Wisconsin - Madison. 162 pp.
+}
 %\references{~~ possibly secondary sources and usages ~~}
 \seealso{\code{\link{pedSires}}, \code{\link{pedigree}}}
 \examples{
