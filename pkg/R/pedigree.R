@@ -161,7 +161,7 @@ pedigreemm <-
     lmf <- eval(lmerc, parent.frame())
 
     
-    rf <- pedigree                      # copy the pedigree list for relfactor
+    relfac <- pedigree          # copy the pedigree list for relfactor
     pnms <- names(pedigree)
     stopifnot(all(pnms %in% names(lmf$FL$fl)))
     asgn <- attr(lmf$FL$fl, "assign")
@@ -169,14 +169,12 @@ pedigreemm <-
         tn <- which(match(pnms[i], names(lmf$FL$fl)) == asgn)
         if (length(tn) > 1)
             stop("a pedigree factor must be associated with only one r.e. term")
-### FIXME: probably should use lmf$FL$trms[[tn]]$Zt instead.  Need to
-### check that the number of rows is the number of unique levels of
-### the factor.        
         Zt <- lmf$FL$trms[[tn]]$Zt
-        rf[[i]] <- relfactor(pedigree[[i]], rownames(Zt))
-        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- rf[[i]] %*% Zt
+        relfac[[i]] <- relfactor(pedigree[[i]], rownames(Zt))
+        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- relfac[[i]] %*% Zt
     }
     ans <- do.call(if (!is.null(lmf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
+    ans <- new("pedigreemm", relfac = relfac, ans)
     ans@call <- match.call()
     ans
 }
