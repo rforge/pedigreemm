@@ -79,29 +79,32 @@ setMethod("head", "pedigree", function(x, ...)
 setMethod("tail", "pedigree", function(x, ...)
 	  do.call("tail", list(x = ped2DF(x), ...)))
 
-
-Linvt <- function(ped)
-{
-    stopifnot(is(ped, "pedigree"))
-    t(as(Diagonal(x = sqrt(1/(1 +.Call("pedigree_inbreeding", ped)))) %*%
-       as(ped, "sparseMatrix"), "triangularMatrix"))
-}
-
 #' Inbreeding coefficients from a pedigree
 #'
-#' Determine the diagonal factor in the inverse of the relationship
-#' matrix from a pedigree.  Although in practice we use the
-#' relationship matrix from a pedigree, it is easier to evaluate the
-#' factors of the inverse of the relationship matrix.  This function
-#' returns the diagonal matrix from the LDL' form of the Cholesky
-#' factorization of the inverse of the relationship matrix.
+#' Create the inbreeding coefficients according to the algorithm given
+#' in "Comparison of four direct algorithms for computing inbreeding
+#' coefficients" by Mehdi Sargolzaei and Hiroaki Iwaisaki, Animal
+#' Science Journal (2005) 76, 401--406.
+#'
+#' @param ped an object that inherits from class \linkS4class{pedigree}
+#' @return the inbreeding coefficients as a numeric vector
+#' @export
+inbreeding <- function(ped) {
+    stopifnot(is(ped, "pedigree"))
+    .Call(pedigreemm:::pedigree_inbreeding, ped)
+}
+
+#' Diagonal of D in the A = TDT' factorization.
+#'
+#' Determine the diagonal factor in the decomposition of the
+#' relationship matrix A as TDT' where T is unit lower triangular.
 #'
 #' @param ped an object that inherits from class \linkS4class{pedigree}
 #' @return a numeric vector
 #' @export
-inbreeding <- function(ped) {
-    stopifnot(is(ped, "pedigree"))
-    F <- .Call("pedigree_inbreeding", ped, PACKAGE = "pedigreemm")
+Dmat <- function(ped)
+{
+    F <- inbreeding(ped)
     sire <- ped@sire
     dam <- ped@dam
     Fsire <- ifelse(is.na(sire), -1, F[sire])
@@ -122,18 +125,18 @@ inbreeding <- function(ped) {
 #'    which to restrict the relationship matrix. If \code{labs} is a
 #'    factor then the levels of the factor are used as the labels.
 #'    Default is the complete set of labels in the pedigree.
-#' @return a sparse, symmetric relationship matrix
+#' @return an object that inherits from \linkS4class{CHMfactor}
 #' @export
-
 relfactor <- function(ped, labs = ped@label)
 {
     stopifnot(is(ped, "pedigree"))
     labs <- factor(labs) # drop unused levels from a factor
     stopifnot(all(labs %in% ped@label))
-    Diagonal(x = sqrt(inbreeding(ped))) %*%
+    rect <- Diagonal(x = sqrt(Dmat(ped))) %*% # rectangular factor
         solve(t(as(ped, "sparseMatrix")),
               Matrix:::fac2sparse(factor(labs, levels = ped@label),
                                   drop = FALSE))
+    as(Cholesky(crossprod(rect)), "sparseMatrix")
 }
 
 pedigreemm <-
@@ -143,39 +146,35 @@ pedigreemm <-
              model = TRUE, x = TRUE, ...)
 {
     mc <- match.call()
-    lmerc <- mc
+    lmerc <- mc                         # create a call to lmer
     lmerc[[1]] <- as.name("lmer")
     lmerc$pedigree <- NULL
-                                        # check the pedigree argument
+
     if (!length(pedigree))              # call lmer instead
         return(eval.parent(lmerc))
-    stopifnot(is.list(pedigree),
+
+    stopifnot(is.list(pedigree),        # check the pedigree argument
               length(names(pedigree)) == length(pedigree),
               all(sapply(pedigree, is, class2 = "pedigree")))
-                                        # call lmer without pedigree and with doFit = FALSE
-    lmerc$doFit <- FALSE
+                                     
+    lmerc$doFit <- FALSE # call lmer without pedigree and with doFit = FALSE
     lmf <- eval(lmerc, parent.frame())
 
+    
+    rf <- pedigree                      # copy the pedigree list for relfactor
     pnms <- names(pedigree)
     stopifnot(all(pnms %in% names(lmf$FL$fl)))
     asgn <- attr(lmf$FL$fl, "assign")
-### FIXME: check here that the random effects term is of the form (1|factor)
     for (i in seq_along(pedigree)) {
         tn <- which(match(pnms[i], names(lmf$FL$fl)) == asgn)
         if (length(tn) > 1)
             stop("a pedigree factor must be associated with only one r.e. term")
-        pedi <- pedigree[[i]]
-        lit <- Linvt(pedi)
 ### FIXME: probably should use lmf$FL$trms[[tn]]$Zt instead.  Need to
 ### check that the number of rows is the number of unique levels of
 ### the factor.        
         Zt <- lmf$FL$trms[[tn]]$Zt
-        rn <- rownames(Zt)
-        stopifnot(all(rn %in% pedi@label))
-        B <- solve(lit, Matrix:::fac2sparse(factor(rn,
-                                                   levels = pedi@label),
-                                            drop = FALSE))
-        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- chol(crossprod(B)) %*% Zt
+        rf[[i]] <- relfactor(pedigree[[i]], rownames(Zt))
+        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- rf[[i]] %*% Zt
     }
     ans <- do.call(if (!is.null(lmf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
     ans@call <- match.call()
