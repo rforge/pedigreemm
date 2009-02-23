@@ -4,12 +4,8 @@
 \usage{inbreeding(ped)}
 \description{Inbreeding coefficients from a pedigree}
 \details{
-  Determine the diagonal factor in the inverse of the relationship
-  matrix from a pedigree.  Although in practice we use the relationship
-  matrix from a pedigree, it is easier to evaluate the factors of the
-  inverse of the relationship matrix.  This function returns the diagonal
-  matrix from the LDL' form of the Cholesky factorization of the inverse
-  of the relationship matrix.
+  Determine the inbreeding coefficients for all the individuals of a pedigree. 
+  This function a numeric vector. 
 }
 \value{a numeric vector}
 \arguments{\item{ped}{an object that inherits from class \linkS4class{pedigree}}}
@@ -18,4 +14,8 @@ ped <- pedigree(sire = c(NA,NA,1, 1,4,5),
                 dam  = c(NA,NA,2,NA,3,2), label= 1:6)
 inbreeding(ped)
 }
+ \source{
+   Sargolzaei, M. and H. Iwaisaki, 2005. Comparison of four direct algorithms
+   for computing the inbreeding coefficients. J. Anim. Sci, 76: 401-406. 
+ }
 \keyword{misc}
