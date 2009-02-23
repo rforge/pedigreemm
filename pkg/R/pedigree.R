@@ -79,6 +79,21 @@ setMethod("head", "pedigree", function(x, ...)
 setMethod("tail", "pedigree", function(x, ...)
 	  do.call("tail", list(x = ped2DF(x), ...)))
 
+<<<<<<< .mine
+<<<<<<< .mine
+ setMethod("chol", "pedigree",
+           function(x, pivot, LINPACK) {
+               ttrans <- solve(t(as(x, "dtCMatrix")))
+               .Call(pedigree_chol, x,
+                     as(.Call("Csparse_diagU2N", t(ttrans), PACKAGE = "Matrix"),
+                        "dtCMatrix"))
+           })
+=======
+>>>>>>> .r57
+
+Linvt <- function(ped)
+{
+=======
 #' Inbreeding coefficients from a pedigree
 #'
 #' Create the inbreeding coefficients according to the algorithm given
@@ -90,6 +105,7 @@ setMethod("tail", "pedigree", function(x, ...)
 #' @return the inbreeding coefficients as a numeric vector
 #' @export
 inbreeding <- function(ped) {
+>>>>>>> .r68
     stopifnot(is(ped, "pedigree"))
     .Call(pedigreemm:::pedigree_inbreeding, ped)
 }
