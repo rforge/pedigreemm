@@ -195,5 +195,15 @@ pedigreemm <-
     ans
 }
 
-    
-    
+setMethod("ranef", signature(object = "pedigreemm"),
+          function(object, postVar = FALSE, drop = FALSE, whichel = names(wt), pedigree = TRUE, ...)
+      {
+          if ((postVar <- as.logical(postVar)) && (pedigree <- as.logical(pedigree)))
+              stop("code for applying pedigree and posterior variances not yet written")
+          ans <- ranef(as(object, "mer"), postVar, drop, whichel)
+          if (!pedigree) return(ans)
+          rf <- object@relfac
+          for (nm in names(rf))
+              ans[[nm]] <- data.frame(as.matrix(rf[[nm]] %*% data.matrix(ans[[nm]])), check.names = FALSE)
+          ans
+      })
