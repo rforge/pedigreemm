@@ -192,10 +192,29 @@ setMethod("ranef", signature(object = "pedigreemm"),
       {
           if ((postVar <- as.logical(postVar)) && (pedigree <- as.logical(pedigree)))
               stop("code for applying pedigree and posterior variances not yet written")
-          ans <- ranef(as(object, "mer"), postVar, drop, whichel)
-          if (!pedigree) return(ans)
-          rf <- object@relfac
-          for (nm in names(rf))
-              ans[[nm]] <- data.frame(as.matrix(rf[[nm]] %*% data.matrix(ans[[nm]])), check.names = FALSE)
+          wt <- lme4:::whichterms(object)
+          ans <- ranef(as(object, "mer"), postVar, drop = FALSE, whichel)
+          if (pedigree) {
+              if (postVar)
+                  stop("postVar and pedigree cannot both be true")
+              rf <- object@relfac
+              for (nm in names(rf)) {
+                  dm <- data.matrix(ans[[nm]])
+                  cn <- colnames(dm)
+                  dm <- as.matrix(rf[[nm]] %*% dm)
+                  colnames(dm) <- cn
+                  ans[[nm]] <- data.frame(dm, check.names = FALSE)
+              }
+          }
+          if (drop)
+              ans <- lapply(ans, function(el)
+                        {
+                            if (ncol(el) > 1) return(el)
+                            pv <- drop(attr(el, "postVar"))
+                            el <- drop(as.matrix(el))
+                            if (!is.null(pv))
+                                attr(el, "postVar") <- pv
+                            el
+                        })
           ans
       })
