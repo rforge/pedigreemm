@@ -1,7 +1,7 @@
 \name{pedCowsR}
 \alias{pedCowsR}
 \docType{data}
-\title{Pedigree of the cows in milk with 70% of the information in pedCows}
+\title{Pedigree of the cows in milk with 0.70 of the information in pedCows}
 \description{
   A \code{\linkS4class{pedigree}} object giving (part of) the pedigree
   of the cows in the \code{\link{milk}} data frame.
