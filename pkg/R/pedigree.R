@@ -187,6 +187,41 @@ pedigreemm <-
     ans
 }
 
+lmer_Zstar <-
+    function(formula, data, family = NULL, REML = TRUE, pre = list(),
+             control = list(), start = NULL, verbose = FALSE, 
+             subset, weights, na.action, offset, contrasts = NULL,
+             model = TRUE, x = TRUE, ...)
+{
+    mc <- match.call()
+    lmerc <- mc                         # create a call to lmer
+    lmerc[[1]] <- as.name("lmer")
+    lmerc$pre <- NULL
+
+    if (!length(pre))              # call lmer instead
+        return(eval.parent(lmerc))
+
+    stopifnot(is.list(pre),        # check the pre argument
+              length(names(pre)) == length(pre),
+              all(sapply(pre, is, class2 = "Matrix")))
+                                     
+    lmerc$doFit <- FALSE # call lmer without pre and with doFit = FALSE
+    lmf <- eval(lmerc, parent.frame())
+
+    
+    pnms <- names(pre)
+    stopifnot(all(pnms %in% names(lmf$FL$fl)))
+    asgn <- attr(lmf$FL$fl, "assign")
+    for (i in seq_along(pre)) {
+        tn <- which(match(pnms[i], names(lmf$FL$fl)) == asgn)
+        if (length(tn) > 1)
+            stop("a pre factor must be associated with only one r.e. term")
+        Zt <- lmf$FL$trms[[tn]]$Zt
+        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- pre[[i]] %*% Zt
+    }
+    do.call(if (!is.null(lmf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
+}
+
 setMethod("ranef", signature(object = "pedigreemm"),
           function(object, postVar = FALSE, drop = FALSE, whichel = names(wt), pedigree = TRUE, ...)
       {
