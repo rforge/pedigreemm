@@ -187,7 +187,7 @@ pedigreemm <-
     ans
 }
 
-lmer_Zstar <-
+ZStar <-
     function(formula, data, family = NULL, REML = TRUE, pre = list(),
              control = list(), start = NULL, verbose = FALSE, 
              subset, weights, na.action, offset, contrasts = NULL,
