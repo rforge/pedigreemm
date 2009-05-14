@@ -13,12 +13,14 @@
 	 \describe{
 	   \item{\code{relfac}:}{A list of relationship matrix factors.  All
 	     other slots are inherited from class \code{"\linkS4class{mer}"}.}
-	   \item{\dots}{all other slots are inherited from the superclass
-	     \code{"\linkS4class{mer}"}.
+
+	   \item{\code{env},\code{nlmodel},\code{frame},\code{call},\code{flist},\code{X},\code{Zt},\code{pWt},\code{offset},\code{y},\code{Gp},\code{dims},\code{ST},\code{V},\code{A},\code{Cm},\code{Cx},\code{L},\code{deviance},\code{fixef},\code{ranef},\code{u},\code{eta},\code{mu},\code{muEta},\code{var},\code{resid},\code{sqrtXWt},\code{sqrtrWt},\code{RZX},\code{RX},\code{Xst},\code{ghw},\code{ghx}:}{all
+	     other slots are derived from the \code{"\linkS4class{mer}"}
+	     class in the \code{lme4} package.
 	   }
 	 }
        }
-
+       
 \section{Extends}{
 Class \code{"\linkS4class{mer}"}, directly.
 }
