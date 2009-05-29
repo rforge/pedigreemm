@@ -17,10 +17,13 @@
     Default is the complete set of labels in the pedigree.}
 }
 \examples{
+
+## Example from chapter 2 of Mrode (2005)
+
 ped <- pedigree(sire = c(NA,NA,1, 1,4,5),
                 dam  = c(NA,NA,2,NA,3,2), label= 1:6)
 (fac <- relfactor(ped))
-crossprod(fac)    # the relationship matrix
+tcrossprod(fac)    # the relationship matrix
 }
 \keyword{array}
 \keyword{algebra}
