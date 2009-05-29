@@ -1,7 +1,7 @@
 \name{relfactor}
 \alias{relfactor}
 \title{Relationship factor from a pedigree...}
-\usage{relfactor(ped, labs}
+\usage{relfactor(ped, labs)}
 \description{Relationship factor from a pedigree}
 \details{
   Determine the right Cholesky factor of the relationship matrix for the
