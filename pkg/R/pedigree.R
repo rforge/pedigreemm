@@ -144,7 +144,8 @@ relfactor <- function(ped, labs = ped@label)
         solve(t(as(ped, "sparseMatrix")),
               Matrix:::fac2sparse(factor(labs, levels = ped@label),
                                   drop = FALSE))
-    as(Cholesky(crossprod(rect)), "sparseMatrix")
+    #as(Cholesky(crossprod(rect)), "sparseMatrix")
+    rect
 }
 
 pedigreemm <-
