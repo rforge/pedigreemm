@@ -256,3 +256,15 @@ setMethod("ranef", signature(object = "pedigreemm"),
                         })
           ans
       })
+
+
+setMethod("fitted", signature(object = "pedigreemm"),
+          function(object, ...)
+
+      {
+
+           print('Method not implemented for pedigreemm.')
+
+      })
+
+
