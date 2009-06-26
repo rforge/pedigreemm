@@ -263,7 +263,8 @@ setMethod("fitted", signature(object = "pedigreemm"),
 
       {
 
-           print('Method not implemented for pedigreemm.')
+           stop("code for applying fitted function not yet written")
+           
 
       })
 
