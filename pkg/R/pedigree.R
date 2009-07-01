@@ -265,7 +265,7 @@ setMethod("fitted", signature(object = "pedigreemm"),
 
       {
 
-           stop("code for applying fitted function not yet written")
+           stop("fitted() not applicable to pedigreemm objects")
            
 
       })
