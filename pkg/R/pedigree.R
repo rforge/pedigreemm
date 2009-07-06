@@ -19,8 +19,13 @@ pedigree <- function(sire, dam, label) {
     sire <- as.integer(sire); dam <- as.integer(dam)
     sire[sire < 1 | sire > n] <- NA
     dam[dam < 1 | dam > n] <- NA
-    new("pedigree", sire = sire, dam = dam,
-	label = as.character(label))
+
+new("pedigree", sire = factor(sire, levels=label), 
+                     dam = factor(dam, levels=label), 
+                     label = as.character(label))
+
+
+
 }
 
 #' Coerce a pedigree to a sparse triangular matrix
