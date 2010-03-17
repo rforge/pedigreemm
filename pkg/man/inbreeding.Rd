@@ -8,6 +8,13 @@
   This function a numeric vector. 
 }
 \value{a numeric vector}
+
+\References{
+   2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel.
+   Technical Note: An R package for fitting generalized linear mixed models
+   in animal breeding. Journal of Animal Science, 88:497-504.
+}
+
 \arguments{\item{ped}{an object that inherits from class \linkS4class{pedigree}}}
 \examples{
 ped <- pedigree(sire = c(NA,NA,1, 1,4,5),

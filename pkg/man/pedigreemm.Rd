@@ -47,6 +47,11 @@ pedigreemm(formula, data, family = NULL, REML = TRUE,
 \value{
   a \code{\linkS4class{pedigreemm}} object.
 }
+\References{
+   2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel. 
+   Technical Note: An R package for fitting generalized linear mixed models 
+   in animal breeding. Journal of Animal Science, 88:497-504.
+}
 \seealso{\code{\linkS4class{pedigreemm}}, \code{\linkS4class{pedigree}},
   \code{\link{relfactor}}.}
 %\examples{}

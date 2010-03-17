@@ -36,7 +36,11 @@
     in Norwegian Red and Holstein cows with Poisson and categorical data mixed models. 
     Master of Science Thesis. University of Wisconsin - Madison. 162 pp.
 }
-%\references{~~ possibly secondary sources and usages ~~}
+\References{
+   2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel.
+   Technical Note: An R package for fitting generalized linear mixed models
+   in animal breeding. Journal of Animal Science, 88:497-504.
+}
 \seealso{\code{\link{pedSires}}, \code{\link{pedigree}}}
 \examples{
 str(mastitis)

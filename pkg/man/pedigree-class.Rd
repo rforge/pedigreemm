@@ -59,6 +59,12 @@
 \seealso{
   \code{\link{pedigree}}, \code{\link{inbreeding}}
 }
+
+\References{
+   2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel.
+   Technical Note: An R package for fitting generalized linear mixed models
+   in animal breeding. Journal of Animal Science, 88:497-504.
+}
 \examples{
 ## Rather use, pedigree()!   The following is "raw code":
 ## Example from chapter 2 of Mrode (2005)
