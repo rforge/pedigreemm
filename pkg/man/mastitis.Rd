@@ -35,6 +35,10 @@
     Vazquez, A.I. 2007. Analysis of number of episodes of clinical mastitis
     in Norwegian Red and Holstein cows with Poisson and categorical data mixed models. 
     Master of Science Thesis. University of Wisconsin - Madison. 162 pp.
+
+   2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel.
+   Technical Note: An R package for fitting generalized linear mixed models
+   in animal breeding. Journal of Animal Science, 88:497-504.
 }
 \References{
    2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel.
