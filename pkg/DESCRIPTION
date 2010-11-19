@@ -1,6 +1,6 @@
 Package: pedigreemm
-Version: 0.2-4
-Date: 2009-05-29
+Version: 0.2-5
+Date: 2010-11-19
 Title: Pedigree-based mixed-effects models
 Author: Douglas Bates and Ana Ines Vazquez
 Maintainer: Ana Ines Vazquez <anainesvs@gmail.com>
