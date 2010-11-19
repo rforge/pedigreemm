@@ -13,7 +13,6 @@
   The sire, herd and days in milk are also recorded for each
   cow.
 }
-%\usage{data(mastitis)}
 \format{
   A data frame with 1675 observations on the following 8 variables.
   \describe{
@@ -40,7 +39,7 @@
    Technical Note: An R package for fitting generalized linear mixed models
    in animal breeding. Journal of Animal Science, 88:497-504.
 }
-\References{
+\references{
    2010. A.I. Vazquez, D.M. Bates, G.J.M. Rosa, D. Gianola and K.A. Weigel.
    Technical Note: An R package for fitting generalized linear mixed models
    in animal breeding. Journal of Animal Science, 88:497-504.
