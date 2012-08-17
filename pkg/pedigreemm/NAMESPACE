@@ -3,7 +3,7 @@ useDynLib(pedigreemm, .registration=TRUE)
 import("Matrix")
 import("lme4")
 
-export("Dmat", "inbreeding", "relfactor", "pedigree", "pedigreemm")
+export("Dmat", "inbreeding", "relfactor", "pedigree", "pedigreemm",  "editPed", "getA", "getAInv")
 
 exportClasses("pedigree", "pedigreemm")
 
