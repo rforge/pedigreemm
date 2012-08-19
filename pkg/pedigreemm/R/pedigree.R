@@ -182,7 +182,6 @@ getAInv <- function(ped)
 getA <- function(ped)
   {
     stopifnot(is(ped, "pedigree"))
-    fac <- relfactor(ped))
     crossprod(relfactor(ped))
   }
 

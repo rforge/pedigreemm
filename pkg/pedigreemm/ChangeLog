@@ -1,3 +1,8 @@
+2012-08-19  Ana Vazquez <anainesvs@gmail.com>
+
+        * [r102] man/editPed.Rd: Correction F by FALSE; new release.
+        * [r101] R/pedigree.R: fix parentheses in the code
+
 2012-08-17  Ana Vazquez <anainesvs@gmail.com>
 
         * [r100] NAMESPACE: Include functions editPed getA getAInv
