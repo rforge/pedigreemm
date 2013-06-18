@@ -11,7 +11,7 @@
   There were 1,314, 1,006, 640, 334 and 103 records were from first thorough fifth lactation animals. 
   
 }
-\usage{data(milk)}
+%\usage{data(milk)}
 \format{
   A data frame with 3397 observations on the following 9 variables.
   \describe{
