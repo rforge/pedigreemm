@@ -307,7 +307,7 @@ pedigreemm <-
             stop("a pedigree factor must be associated with only one r.e. term")
         ind <- (lmf@Gp)[tn:(tn+1L)]
         rowsi <- (ind[1]+1L):ind[2]
-        relfac[[i]] <- relfactor(pedigree[[i]], rownames(Zt))
+        relfac[[i]] <- relfactor(pedigree[[i]]) #, rownames(Zt)[rowsi])
         Zt[rowsi,] <- relfac[[i]] %*% Zt[rowsi,]
     }
     reTrms <- list(Zt=Zt,theta=lmf@theta,Lambdat=pp$Lambdat,Lind=pp$Lind,
@@ -397,4 +397,10 @@ setMethod("ranef", signature(object = "pedigreemm"),
 setMethod("fitted", signature(object = "pedigreemm"),
           function(object, ...) {
               stop("fitted() not applicable to pedigreemm objects")
+          })
+
+
+setMethod("residuals", signature(object = "pedigreemm"),
+          function(object, ...) {
+              stop("residuals() not applicable to pedigreemm objects")
           })
