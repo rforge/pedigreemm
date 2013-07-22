@@ -152,8 +152,11 @@ relfactor <- function(ped, labs)
         solve(t(as(ped, "sparseMatrix")), # rectangular factor
               Matrix:::fac2sparse(factor(labs, levels = ped@label),
                                   drop = FALSE))
-    chol(crossprod(rect))
+    relf<-chol(crossprod(rect))
+    dimnames(relf)[[1]]<- dimnames(relf)[[2]]<-labs
+    relf
 }
+
 
 #' Inverse of the Relationship Matrix
 #'
@@ -168,7 +171,9 @@ getAInv <- function(ped)
     stopifnot(is(ped, "pedigree"))    
     T_Inv <- as(ped, "sparseMatrix")
     D_Inv <- diag(1/Dmat(ped))
-    t(T_Inv) %*% D_Inv %*% T_Inv
+    aiMx<-t(T_Inv) %*% D_Inv %*% T_Inv
+    dimnames(aiMx)[[1]]<-dimnames(aiMx)[[2]] <-ped@label
+    aiMx
 }
 
 #' Additive Relationship Matrix
@@ -182,7 +187,9 @@ getAInv <- function(ped)
 getA <- function(ped)
 {
     stopifnot(is(ped, "pedigree"))
-    crossprod(relfactor(ped))
+    aMx<-crossprod(relfactor(ped))
+    dimnames(aMx)[[1]]<-dimnames(aMx)[[2]] <-ped@label
+    aMx
 }
 
 #' Counts number of generations of ancestors for one subject. Use recursion. 
@@ -307,7 +314,7 @@ pedigreemm <-
             stop("a pedigree factor must be associated with only one r.e. term")
         ind <- (lmf@Gp)[tn:(tn+1L)]
         rowsi <- (ind[1]+1L):ind[2]
-        relfac[[i]] <- relfactor(pedigree[[i]]) #, rownames(Zt)[rowsi])
+        relfac[[i]] <- relfactor(pedigree[[i]], rownames(Zt)[rowsi])
         Zt[rowsi,] <- relfac[[i]] %*% Zt[rowsi,]
     }
     reTrms <- list(Zt=Zt,theta=lmf@theta,Lambdat=pp$Lambdat,Lind=pp$Lind,

@@ -54,5 +54,16 @@ pedigreemm(formula, data, family = NULL, REML = TRUE,
 }
 \seealso{\code{\linkS4class{pedigreemm}}, \code{\linkS4class{pedigree}},
   \code{\link{relfactor}}.}
-%\examples{}
+%\examples{
+  milk <- within(milk, sdMilk <- milk / sd(milk))
+  fm <- pedigreemm(sdMilk ~ lact + log(dim) + (1|id) + (1|herd),
+         data = milk, pedigree = list(id = pedCowsR))
+
+  fm3 <- pedigreemm(
+         NCM ~ birth + calvingYear + (1|sire) + (1|herd),
+         data = mastitis, pedigree = list(sire = pedSires),
+         family = 'poisson')
+
+}
+
 \keyword{models}
