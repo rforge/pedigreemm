@@ -54,8 +54,8 @@ pedigreemm(formula, data, family = NULL, REML = TRUE,
 }
 \seealso{\code{\linkS4class{pedigreemm}}, \code{\linkS4class{pedigree}},
   \code{\link{relfactor}}.}
-%\examples{
-  milk <- within(milk, sdMilk <- milk / sd(milk))
+\examples{
+ \dontrun{  milk <- within(milk, sdMilk <- milk / sd(milk))
   fm <- pedigreemm(sdMilk ~ lact + log(dim) + (1|id) + (1|herd),
          data = milk, pedigree = list(id = pedCowsR))
 
@@ -65,5 +65,5 @@ pedigreemm(formula, data, family = NULL, REML = TRUE,
          family = 'poisson')
 
 }
-
+}
 \keyword{models}
