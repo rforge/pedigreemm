@@ -221,15 +221,15 @@ getGenAncestors <- function(pede, id){
     }
     ## find out if there is a parent number two
     if (np==2){
-           tmpgenP2 <- pede$gene[pede$id==parents[2]]
-           if( is.na(tmpgenP2))
-           {
-              pede <- getGenAncestors(pede, parents[2])
-              genP2  <- 1 + pede$gene[pede$id==parents[2]]
-           }  else {
-              genP2 <- 1 + tmpgenP2
-           }
-    genP1 <- max(genP1, genP2)
+        tmpgenP2 <- pede$gene[pede$id==parents[2]]
+        if( is.na(tmpgenP2))
+        {
+            pede <- getGenAncestors(pede, parents[2])
+            genP2  <- 1 + pede$gene[pede$id==parents[2]]
+        }  else {
+            genP2 <- 1 + tmpgenP2
+        }
+        genP1 <- max(genP1, genP2)
     }
     pede$gene[j] <- genP1
     ## print(paste('id:', id, ', gen:', genP1, ', row:', j))
@@ -270,13 +270,13 @@ editPed <- function(sire, dam, label, verbose = FALSE)
     for(i in 1:nped){
         if(verbose) print(i)
         if(is.na(pede$gene[i])){
-           id <-pede$id[i]
-           pede <-getGenAncestors(pede, id)
-   }}
-   ord<- order(pede$gene)
-   ans<-data.frame(label=labelOl, sire=sireOl, dam=damOl, gene=pede$gene,
-          stringsAsFactors =F)
-   ans[ord,]
+            id <-pede$id[i]
+            pede <-getGenAncestors(pede, id)
+        }}
+    ord<- order(pede$gene)
+    ans<-data.frame(label=labelOl, sire=sireOl, dam=damOl, gene=pede$gene,
+                    stringsAsFactors =F)
+    ans[ord,]
 }
 
 pedigreemm <-
@@ -285,12 +285,16 @@ pedigreemm <-
              subset, weights, na.action, offset, contrasts = NULL,
              model = TRUE, x = TRUE, ...)
 {
-   gaus<- is.null(family)
-    if(!gaus) gaus<- family=='gaussian'
+    gaus <- TRUE
+    if (!is.null(family)) {
+        if (is.character(family)) gaus <- family == "gaussian"
+        if (is.function(family)) gaus <- family == gaussian
+        if (inherits(family, "family"))
+            gaus <- family$family == "gaussian" && family$link == "identity"
+    }
     mc <- match.call()
     lmerc <- mc                         # create a call to lmer
-   if(gaus){  lmerc[[1]] <- as.name("lmer")
-   } else { lmerc[[1]] <- as.name("glmer") }
+    lmerc[[1]] <- ifelse(gaus, as.name("lmer"), as.name("glmer"))
     lmerc$pedigree <- NULL
 
     if (!length(pedigree))              # call lmer instead
@@ -299,7 +303,7 @@ pedigreemm <-
     stopifnot(is.list(pedigree),        # check the pedigree argument
               length(names(pedigree)) == length(pedigree),
               all(sapply(pedigree, is, class2 = "pedigree")))
-                                     
+    
     lmf <- eval(lmerc, parent.frame())
 
     
@@ -322,51 +326,16 @@ pedigreemm <-
     }
     reTrms <- list(Zt=Zt,theta=lmf@theta,Lambdat=pp$Lambdat,Lind=pp$Lind,
                    lower=lmf@lower,flist=lmf@flist,cnms=lmf@cnms, Gp=lmf@Gp)
-    devfun <- lme4:::mkLmerDevfun(lmf@frame, pp$X, reTrms,
+    devfun <- mkLmerDevfun(lmf@frame, pp$X, reTrms,
                                   REML=resp$REML > 0L, start = lmf@theta)
-    opt <- lme4:::optimizeLmer(devfun, optimizer="Nelder_Mead",...)
-    mm <- lme4:::mkMerMod(environment(devfun), opt, reTrms, lmf@frame, mc)
+    opt <- optimizeLmer(devfun, optimizer="Nelder_Mead",...)
+    mm <- mkMerMod(environment(devfun), opt, reTrms, lmf@frame, mc)
     ans <- do.call(new, list(Class="pedigreemm", relfac=relfac,
-                      frame=mm@frame, flist=mm@flist, cnms=mm@cnms, Gp=mm@Gp,
-                      theta=mm@theta, beta=mm@beta,u=mm@u,lower=mm@lower,
-                      devcomp=mm@devcomp, pp=mm@pp,resp=mm@resp,optinfo=mm@optinfo))
+                             frame=mm@frame, flist=mm@flist, cnms=mm@cnms, Gp=mm@Gp,
+                             theta=mm@theta, beta=mm@beta,u=mm@u,lower=mm@lower,
+                             devcomp=mm@devcomp, pp=mm@pp,resp=mm@resp,optinfo=mm@optinfo))
     ans@call <- evalq(mc)
     ans
-}
-
-ZStar <-
-    function(formula, data, family = NULL, REML = TRUE, pre = list(),
-             control = list(), start = NULL, verbose = FALSE, 
-             subset, weights, na.action, offset, contrasts = NULL,
-             model = TRUE, x = TRUE, ...)
-{
-    mc <- match.call()
-    lmerc <- mc                         # create a call to lmer
-    lmerc[[1]] <- as.name("lmer")
-    lmerc$pre <- NULL
-
-    if (!length(pre))              # call lmer instead
-        return(eval.parent(lmerc))
-
-    stopifnot(is.list(pre),        # check the pre argument
-              length(names(pre)) == length(pre),
-              all(sapply(pre, is, class2 = "Matrix")))
-                                     
-    lmerc$doFit <- FALSE # call lmer without pre and with doFit = FALSE
-    lmf <- eval(lmerc, parent.frame())
-
-    
-    pnms <- names(pre)
-    stopifnot(all(pnms %in% names(lmf$FL$fl)))
-    asgn <- attr(lmf$FL$fl, "assign")
-    for (i in seq_along(pre)) {
-        tn <- which(match(pnms[i], names(lmf$FL$fl)) == asgn)
-        if (length(tn) > 1)
-            stop("a pre factor must be associated with only one r.e. term")
-        Zt <- lmf$FL$trms[[tn]]$Zt
-        lmf$FL$trms[[tn]]$Zt <- lmf$FL$trms[[tn]]$A <- pre[[i]] %*% Zt
-    }
-    do.call(if (!is.null(lmf$glmFit)) lme4:::glmer_finalize else lme4:::lmer_finalize, lmf)
 }
 
 setMethod("ranef", signature(object = "pedigreemm"),

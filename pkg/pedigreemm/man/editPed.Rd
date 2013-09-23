@@ -9,8 +9,7 @@
   declared as subjects the function generates them. Finally, it orders the pedigree. 
   The output can be used to build a pedigree object \code{ped}
 }
-\references{
-}
+%\references{}
 \value{A data frame with strings as characters. All subjects are in the label column, 
        and all subjects will appear in this column before appering as sires or dams.}
 \arguments{

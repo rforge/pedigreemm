@@ -6,8 +6,7 @@
 \details{
   Returns the additive relationship matrix for the pedigree \code{ped} .
 }
-\references{
-}
+%\references{}
 \value{Sparse matrix}
 \arguments{
   \item{ped}{a pedigree that includes the individuals who occur in \code{labs}}
