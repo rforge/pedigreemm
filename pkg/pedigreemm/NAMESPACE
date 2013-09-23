@@ -1,5 +1,6 @@
 useDynLib(pedigreemm, .registration=TRUE)
 
+import("methods")
 import("Matrix")
 import("lme4")
 

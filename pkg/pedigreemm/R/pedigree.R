@@ -285,8 +285,10 @@ pedigreemm <-
              subset, weights, na.action, offset, contrasts = NULL,
              model = TRUE, x = TRUE, ...)
 {
-    gaus <- TRUE
-    if (!is.null(family)) {
+    gaus <- FALSE
+    if (is.null(family)) {
+        gaus <- TRUE
+    } else {
         if (is.character(family)) gaus <- family == "gaussian"
         if (is.function(family)) gaus <- family == gaussian
         if (inherits(family, "family"))
@@ -294,10 +296,12 @@ pedigreemm <-
     }
     mc <- match.call()
     lmerc <- mc                         # create a call to lmer
-    lmerc[[1]] <- ifelse(gaus, as.name("lmer"), as.name("glmer"))
+    lmerc[[1]] <- as.name("glmer")
+    if (gaus) lmerc[[1]] <- as.name("lmer")
     lmerc$pedigree <- NULL
+    if (!gaus) lmerc$REML <- NULL
 
-    if (!length(pedigree))              # call lmer instead
+    if (!length(pedigree))              # call [g]lmer instead
         return(eval.parent(lmerc))
 
     stopifnot(is.list(pedigree),        # check the pedigree argument
