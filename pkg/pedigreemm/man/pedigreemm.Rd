@@ -58,7 +58,7 @@ pedigreemm(formula, data, family = NULL, REML = TRUE,
 milk <- within(milk, sdMilk <- milk / sd(milk))
 fm <- pedigreemm(sdMilk ~ lact + log(dim) + (1|id) + (1|herd),
                  data = milk, pedigree = list(id = pedCowsR))
-fm3 <- pedigreemm(NCM ~ birth + calvingYear + (1|sire) + (1|herd),
+fm3 <- pedigreemm(NCM ~ as.integer(birth)+as.integer(calvingYear)+(1|sire)+(1|herd),
                   data = mastitis, pedigree = list(sire = pedSires),
                   family = 'poisson')
 }
