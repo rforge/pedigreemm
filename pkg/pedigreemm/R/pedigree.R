@@ -331,7 +331,7 @@ pedigreemm <-
     reTrms <- list(Zt=Zt,theta=lmf@theta,Lambdat=pp$Lambdat,Lind=pp$Lind,
                    lower=lmf@lower,flist=lmf@flist,cnms=lmf@cnms, Gp=lmf@Gp)
     dfl <- list(fr=lmf@frame, X=pp$X, reTrms=reTrms, start=lmf@theta)
-    if (gaus) dfl$REML = resp$REML > 0L)
+    if (gaus) (dfl$REML = resp$REML > 0L)
     devfun <- do.call(mkLmerDevfun, dfl)
     opt <- optimizeLmer(devfun, optimizer="Nelder_Mead",...)
     mm <- mkMerMod(environment(devfun), opt, reTrms, lmf@frame, mc)
