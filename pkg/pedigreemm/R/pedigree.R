@@ -104,7 +104,7 @@ setMethod("chol", "pedigree",
 #' @export
 inbreeding <- function(ped) {
     stopifnot(is(ped, "pedigree"))
-    .Call(pedigreemm:::pedigree_inbreeding, ped)
+    .Call(pedigree_inbreeding, ped)
 }
 
 #' Diagonal of D in the A = TDT' factorization.
@@ -150,8 +150,7 @@ relfactor <- function(ped, labs)
     stopifnot(all(labs %in% ped@label))
     rect <- Diagonal(x = sqrt(Dmat(ped))) %*% 
         solve(t(as(ped, "sparseMatrix")), # rectangular factor
-              Matrix:::fac2sparse(factor(labs, levels = ped@label),
-                                  drop = FALSE))
+              as(factor(labs, levels = ped@label),"sparseMatrix"))
     relf<-chol(crossprod(rect))
     dimnames(relf)[[1]]<- dimnames(relf)[[2]]<-labs
     relf
@@ -344,12 +343,12 @@ pedigreemm <-
 }
 
 setMethod("ranef", signature(object = "pedigreemm"),
-          function(object, postVar = FALSE, drop = FALSE, whichel = names(wt), pedigree = TRUE, ...)
+          function(object, postVar = FALSE, drop = FALSE, whichel = names(ans), pedigree = TRUE, ...)
       {
           if ((postVar <- as.logical(postVar)) && (pedigree <- as.logical(pedigree)))
               stop("code for applying pedigree and posterior variances not yet written")
-          wt <- lme4:::whichterms(object)
-          ans <- ranef(as(object, "merMod"), postVar, drop = FALSE, whichel)
+          ans <- ranef(as(object, "merMod"), postVar, drop = FALSE)
+          ans <- ans[whichel]
           if (pedigree) {
               if (postVar)
                   stop("postVar and pedigree cannot both be true")
