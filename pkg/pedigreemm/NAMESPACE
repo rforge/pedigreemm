@@ -10,7 +10,10 @@ exportClasses("pedigree", "pedigreemm")
 
 exportMethods(
               "coerce",
+              "fitted",
               "head",
+              "ranef",
+              "residuals",
               "show",
               "tail"
               )

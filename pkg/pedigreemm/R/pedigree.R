@@ -349,7 +349,7 @@ setMethod("ranef", signature(object = "pedigreemm"),
           if ((postVar <- as.logical(postVar)) && (pedigree <- as.logical(pedigree)))
               stop("code for applying pedigree and posterior variances not yet written")
           wt <- lme4:::whichterms(object)
-          ans <- ranef(as(object, "mer"), postVar, drop = FALSE, whichel)
+          ans <- ranef(as(object, "merMod"), postVar, drop = FALSE, whichel)
           if (pedigree) {
               if (postVar)
                   stop("postVar and pedigree cannot both be true")
