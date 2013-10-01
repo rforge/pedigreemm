@@ -15,6 +15,7 @@ ranef( object, postVar = FALSE, drop = FALSE, whichel = names(ans), pedigree = T
    variance covariance matrices, also called the posterior variances, of the 
     random effects should be included. Default is FALSE. \code{\link[lme4]{lmer}}}
   \item{drop}{a logical argument indicating whether random effects in the pedigree without data should be droped.}
+  \item{whichel} {a character vector with random effect labels, by default will take the levels of the random effects from lme4}
   \item{pedigree}{a logical argument indicating whether the random effect should be linked to the pedigree}
   \item{\dots}{as in \code{\link[lme4]{lmer}}}
 }
