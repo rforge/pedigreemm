@@ -43,11 +43,11 @@
 #################################################################################################
    #(2) A larger pedigree
  #Useing pedCows pedigree
- str(pedCows)
- pede<-data.frame(id=pedCows@label, sire=pedCows@sire, dam=pedCows@dam)
- pede<-pede[sample(1:nrow(pede),replace=FALSE),]
- pede<- editPed(sire=pede$sire, dam=pede$dam, label=pede$id)
- ped<- with(pede, pedigree(label=label, sire=sire, dam=dam))
+# str(pedCows)
+# pede<-data.frame(id=pedCows@label, sire=pedCows@sire, dam=pedCows@dam)
+# pede<-pede[sample(1:nrow(pede),replace=FALSE),]
+# pede<- editPed(sire=pede$sire, dam=pede$dam, label=pede$id)
+# ped<- with(pede, pedigree(label=label, sire=sire, dam=dam))
 }
 \keyword{array}
 \keyword{algebra}
