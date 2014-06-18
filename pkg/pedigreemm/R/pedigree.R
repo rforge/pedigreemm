@@ -158,10 +158,16 @@ relfactor <- function(ped, labs)
     tmpA<-crossprod(rect)
     tmp<- ped@label %in% labs 
     tmpA<-tmpA[tmp,tmp]
+
+    orlab <- order(as.numeric(factor(labped<-ped@label[tmp], levels=labs, ordered=T)))
+    labped<- as.character(labped[orlab])
+    tmpA  <- tmpA[orlab, orlab]
+    stopifnot(all.equal(as.character(labped), as.character(labs)))
     relf<-chol(tmpA)
     dimnames(relf)[[1]]<- dimnames(relf)[[2]]<-labs
     relf
 }
+
 
 
 #' Inverse of the Relationship Matrix
