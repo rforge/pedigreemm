@@ -148,10 +148,17 @@ relfactor <- function(ped, labs)
                solve(t(as(ped, "sparseMatrix"))))
     labs <- factor(labs) # drop unused levels from a factor
     stopifnot(all(labs %in% ped@label))
-    rect <- Diagonal(x = sqrt(Dmat(ped))) %*% 
+#    rect <- Diagonal(x = sqrt(Dmat(ped))) %*% 
+#        solve(t(as(ped, "sparseMatrix")), # rectangular factor
+#              as(factor(labs, levels = ped@label),"sparseMatrix"))
+
+    rect <- Diagonal(x = sqrt(Dmat(ped))) %*%
         solve(t(as(ped, "sparseMatrix")), # rectangular factor
-              as(factor(labs, levels = ped@label),"sparseMatrix"))
-    relf<-chol(crossprod(rect))
+              as(factor(ped@label, levels = ped@label),"sparseMatrix"))
+    tmpA<-crossprod(rect)
+    tmp<- ped@label %in% labs 
+    tmpA<-tmpA[tmp,tmp]
+    relf<-chol(tmpA)
     dimnames(relf)[[1]]<- dimnames(relf)[[2]]<-labs
     relf
 }
