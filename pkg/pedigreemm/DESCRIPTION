@@ -2,8 +2,8 @@ Package: pedigreemm
 Version: 0.3-1
 Date: 2013-09-27
 Title: Pedigree-based mixed-effects models
-Authors@R: c(person("Douglas","Bates",role="aut"),
-             person("Ana Ines","Vazquez", email="anainesvs@gmail.com",role=c("aut","cre")))
+Author: Douglas Bates and Ana Ines Vazquez,
+Maintainer: Ana Ines Vazquez <anainesvs@gmail.com>
 Description: Fit pedigree-based mixed-effects models.
 Depends: R(>= 3.0.0), lme4 (>= 1.0), Matrix (>= 1.0), methods
 LazyLoad: yes
